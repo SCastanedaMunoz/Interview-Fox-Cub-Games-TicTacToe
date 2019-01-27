@@ -295,11 +295,11 @@ namespace SCMTicTacToe
             curPlayer = curPlayer == 1 ? 0 : 1;
             B.MyPlayer = curPlayer;
 
-            int X = (int)B.GridPos.x;
-            int Y = (int)B.GridPos.y;
+            int c = (int)B.GridPos.x;
+            int r = (int)B.GridPos.y;
 
-            GameBoard.CheckGameBoard(X, Y);
-            ModifyMovementHistory(X, Y);
+            GameBoard.CheckGameBoard(c, r, curPlayer);
+            ModifyMovementHistory(c, r);
 
             return Players[curPlayer].Icon;
         }
@@ -363,38 +363,38 @@ namespace SCMTicTacToe
         /// <summary>
         /// Modifies the movement history, and Starts a new Game Session if necessary
         /// </summary>
-        /// <param name="X">Row affected by Player action</param>
-        /// <param name="Y">Column affected by Player action</param>
-        private void ModifyMovementHistory(int X, int Y)
+        /// <param name="c">Column affected by Player action</param>
+        /// <param name="r">Row affected by Player action</param>
+        private void ModifyMovementHistory(int c, int r)
         {
             if (movementHistory.Count == 0)
             {
                 movementHistory.Add("Game Session #" + GameSession + ",  Size: " + GameBoard.Size + "x" + GameBoard.Size + " Has Started");
             }
 
-            movementHistory.Add("Player " + (curPlayer + 1) + " Placed a Piece on Row = " + (X + 1) + ", Column = " + (Y + 1));
+            movementHistory.Add("Player " + (curPlayer + 1) + " Placed a Piece on Row = " + (r + 1) + ", Column = " + (c + 1));
         }
 
         /// <summary>
         /// Modifies the movement history, and finishes the game history it according to the last player action.
         /// </summary>
-        /// <param name="X">Row affected by Player action</param>
-        /// <param name="Y">Column affected by Player action</param>
+        /// <param name="c">Column affected by Player action</param>
+        /// <param name="r">Row affected by Player action</param>
         /// <param name="WinType">What Type of Win happened?</param>
-        public void ModifyMovementHistoryOnGameOver(int X, int Y, string WinType)
+        public void ModifyMovementHistoryOnGameOver(int c, int r, string WinType)
         {
-            movementHistory.Add("Player " + (curPlayer + 1) + " Placed a Piece on Row = " + (X + 1) + ", Column = " + (Y + 1) + " and Won the Game with a " + WinType);
+            movementHistory.Add("Player " + (curPlayer + 1) + " Placed a Piece on Row = " + (r + 1) + ", Column = " + (c + 1) + " and Won the Game with a " + WinType);
             SaveMovementHistory();
         }
 
         /// <summary>
         /// Modifies the movement history, and finishes the game history on a tie.
         /// </summary>
-        /// <param name="X">Row affected by Player action</param>
-        /// <param name="Y">Column affected by Player action</param>
-        public void ModifyMovementHistoryOnGameOver(int X, int Y)
+        /// <param name="c">c affected by Player action</param>
+        /// <param name="r">r affected by Player action</param>
+        public void ModifyMovementHistoryOnGameOver(int c, int r)
         {
-            movementHistory.Add("Player " + (curPlayer + 1) + " Placed a Piece on Row = " + (X + 1) + ", Column = " + (Y + 1) + ". The Game Ended in a Tie.");
+            movementHistory.Add("Player " + (curPlayer + 1) + " Placed a Piece on Row = " + (r + 1) + ", Column = " + (c + 1) + ". The Game Ended in a Tie.");
             SaveMovementHistory();
         }
 

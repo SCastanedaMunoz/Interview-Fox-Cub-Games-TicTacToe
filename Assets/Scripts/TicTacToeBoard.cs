@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace SCMTicTacToe
@@ -53,7 +54,14 @@ namespace SCMTicTacToe
         /// Current Board Size on int value
         /// </summary>
         public int Size { get; private set; }
+
+        private int MSize;
         #endregion
+
+        private int[] cols;
+        private int[] rows;
+        private int diag;
+        private int antiDiag;
 
         #region GAME BOARD INITIALIZATION
 
@@ -92,6 +100,10 @@ namespace SCMTicTacToe
         {
             GameManager.Instance.GameSession++;
             MoveCount = 0;
+            Array.Clear(cols, 0, cols.Length);
+            Array.Clear(rows, 0, rows.Length);
+            diag = 0;
+            antiDiag = 0;
 
             foreach (BoardTile B in TileBoard)
             {
@@ -122,13 +134,17 @@ namespace SCMTicTacToe
         public void BuildBoard()
         {
             // Same Size Board, No Need to build another one
-            if (/*TileBoard != null &&*/ (BType == BOARDSIZE.SIZE3X3? 3: 4) == Size) { return; }
+            if ((BType == BOARDSIZE.SIZE3X3? 3: 4) == Size) { return; }
 
             ClearBoard();
-
+            
             if (!TilesParent.gameObject.activeInHierarchy) { TilesParent.gameObject.SetActive(true); }
 
             Size = BType == BOARDSIZE.SIZE3X3 ? 3 : 4;
+            MSize = -Size;
+
+            cols = new int[Size];
+            rows = new int[Size];
 
             GameManager.Instance.GameSession++;
             // Since we are only using 2 different Board Sizes
@@ -159,27 +175,49 @@ namespace SCMTicTacToe
         /// <summary>
         /// Checks the Game Board for a Win according to the Player decision
         /// </summary>
-        /// <param name="X">Row affected by the Player action</param>
-        /// <param name="Y">Column affected by the Player action</param>
-        public void CheckGameBoard(int X, int Y)
+        /// <param name="c">Column affected by the Player action</param>
+        /// <param name="r">row affected by the Player action</param>
+        public void CheckGameBoard(int c, int r, int P)
         {
             MoveCount++;
 
-            CheckRowOrColumn(X, Y);
+            if (P == 0) {
+                cols[c]++;
+                rows[r]++;
+                if (c == r)
+                    diag++;
+                if (c + r == Size - 1)
+                    antiDiag++;
+            }
 
-            CheckRowOrColumn(X, Y, false);
-
-            CheckDiagonal(X, Y);
-
-            CheckDiagonal(X, Y, false);
+            else
+            {
+                cols[c]--;
+                rows[r]--;
+                if (c == r)
+                    diag--;
+                if (c + r == Size - 1)
+                    antiDiag--;
+            }
 
             if (MoveCount == (Mathf.Pow(Size, 2)))
             {
                 GameManager.Instance.GameHasEnded(true);
-                GameManager.Instance.ModifyMovementHistoryOnGameOver(X, Y);
+                GameManager.Instance.ModifyMovementHistoryOnGameOver(c, r);
+            }
+
+            if ((cols[c] == Size || cols[c] == MSize) ||
+                (rows[r] == Size || rows[r] == MSize) || 
+                (diag == Size || diag == MSize) || 
+                (antiDiag == Size ||  antiDiag == MSize))
+            {
+                GameManager.Instance.GameHasEnded();
+                GameManager.Instance.ModifyMovementHistoryOnGameOver(c, r, rows[r] == Size || rows[r] == MSize ? "Row" : cols[c] == Size || cols[c] == MSize ? "Column" :  diag == Size || diag == MSize ? "Diagonal" : "Inverse Diagonal");
             }
         }
 
+        // OLD WIND CONDITION CHECK
+        /*
         /// <summary>
         /// Checks the Board or Column for a win according to the player input.
         /// </summary>
@@ -229,6 +267,7 @@ namespace SCMTicTacToe
                 }
             }
         }
+        */
         #endregion
     }
 }
