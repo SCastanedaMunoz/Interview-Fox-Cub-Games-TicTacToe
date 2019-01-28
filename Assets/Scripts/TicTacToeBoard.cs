@@ -55,12 +55,30 @@ namespace SCMTicTacToe
         /// </summary>
         public int Size { get; private set; }
 
+        /// <summary>
+        /// Oppsite value of MSize
+        /// </summary>
         private int MSize;
         #endregion
-
+        
+        /// <summary>
+        /// Array of Columns on Board
+        /// </summary>
         private int[] cols;
+
+        /// <summary>
+        /// Array of Columns on Board
+        /// </summary>
         private int[] rows;
+
+        /// <summary>
+        /// Diagonal Value;
+        /// </summary>
         private int diag;
+
+        /// <summary>
+        /// AntiDiagional Value
+        /// </summary>
         private int antiDiag;
 
         #region GAME BOARD INITIALIZATION
@@ -173,10 +191,11 @@ namespace SCMTicTacToe
 
         #region WIN CONDITION CHECKS
         /// <summary>
-        /// Checks the Game Board for a Win according to the Player decision
+        /// Checks the Game Board for a Win according to the Player action
         /// </summary>
         /// <param name="c">Column affected by the Player action</param>
         /// <param name="r">row affected by the Player action</param>
+        /// <param name="P">Player who made a movement</param>
         public void CheckGameBoard(int c, int r, int P)
         {
             MoveCount++;
